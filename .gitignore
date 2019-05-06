@@ -1,6 +1,6 @@
 .idea/
 target/
+ICW_venv/
 __pycache__/
-ICW_venv/
 *.iml
-ICW_venv/
+*.log
