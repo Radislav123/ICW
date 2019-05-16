@@ -19,7 +19,7 @@ class AuthorizationView(View):
 		except BaseException as error:
 			self.logger.error(error)
 		response = {"something": "from authorization"}
-		return HttpResponse(json.dumps(response), content_type = "application/json", status = 250)
+		return HttpResponse(json.dumps(response), content_type = "application/json", status = 200)
 
 
 class DaemonView(View):
