@@ -4,6 +4,6 @@ from . import views
 
 app_name = 'databasedaemon'
 urlpatterns = [
-	url(r'^$', views.Greeter.as_view(), name = 'where can i this name see?'),
-	url(r'authorization/$', views.Authorization.as_view(), name = 'authorization view')
+	url(r'^$', views.DaemonView.as_view(), name = 'where can i this name see?'),
+	url(r'authorization/$', views.AuthorizationView.as_view(), name = 'where can i this name see?')
 ]

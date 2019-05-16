@@ -4,3 +4,6 @@ ICW_venv/
 __pycache__/
 *.iml
 *.log
+*.pem
+*.rdp
+AWS.txt

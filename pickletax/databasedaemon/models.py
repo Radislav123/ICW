@@ -1,8 +1,6 @@
 import re
-from datetime import datetime
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.utils import dateparse
 
 
 info_length = 500
@@ -12,9 +10,13 @@ choice_length = 20
 
 # here validators are represented
 def city_validator(value):
-	cities = []
+	cities = [
+		"Москва",
+		"Красноярск",
+		"Казань"
+	]
 	if value not in cities:
-		raise ValidationError(message = "%(city)s is not in out city list.", params = {"city": value})
+		raise ValidationError(message = "%(city)s is not in our city list.", params = {"city": value})
 
 
 def classroom_number_validator(value):
@@ -68,16 +70,20 @@ def class_number_validator(value):
 		)
 
 
-# todo: write _str_ methods
 # here models are represented
 class Institution(models.Model):
-	__classType = (
-		("simple class", "simple class"),
-		("doubled class", "doubled class")
+	_class_type = (
+		("урок", "урок"),
+		("пара", "пара")
 	)
 	ID = models.AutoField(primary_key = True)
 	name = models.CharField(max_length = name_length)
-	class_type = models.CharField(max_length = choice_length, choices = __classType, default = "doubled class")
+	class_type = models.CharField(max_length = choice_length, choices = _class_type, default = "пара")
+	max_lesson_number = models.IntegerField(default = 9)
+
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)
 
 
 class Campus(models.Model):
@@ -88,50 +94,66 @@ class Campus(models.Model):
 	address = models.CharField(max_length = name_length)
 	info = models.CharField(max_length = choice_length, blank = True)
 
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)
+
 
 class Classroom(models.Model):
-	__access_rights = (
-		("free", "free"),
-		("teacher is required", "teacher is required"),
-		("for stuff only", "for stuff only")
+	_access_rights = (
+		("свободный", "свободный"),
+		("необходимость преподавателя", "необходимость преподавателя"),
+		("только для сотрудников", "только для сотрудников")
 	)
-	__type = (
-		("lecture", "lecture"),
-		("seminary", "seminary"),
-		("laboratory", "laboratory"),
-		("for stuff", "for stuff")
+	_type = (
+		("лекционная", "лекционная"),
+		("семинарская", "семинарская"),
+		("лаборатория", "лаборатория"),
+		("для сотрудников", "для сотрудников")
 	)
 	campus_ID = models.ForeignKey(to = Campus, to_field = 'ID', on_delete = models.PROTECT)
 	# sometimes, appears classrooms with number 210a, for example.
 	number = models.CharField(max_length = choice_length, primary_key = True, validators = [classroom_number_validator])
 	seat_number = models.IntegerField(validators = [classroom_seat_number_validator])
-	access_rights = models.CharField(max_length = choice_length, choices = __access_rights, default = "free")
-	type = models.CharField(max_length = choice_length, choices = __type, default = "seminary")
+	access_rights = models.CharField(max_length = choice_length, choices = _access_rights, default = "свободный")
+	type = models.CharField(max_length = choice_length, choices = _type, default = "семинарская")
 	info = models.CharField(max_length = info_length, blank = True)
+
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)
 
 
 class ClassroomActivity(models.Model):
-	__vacant = (
-		("free", "free"),
-		("reserved", "reserved"),
-		("occupied", "occupied")
+	_vacant = (
+		("свободна", "свободна"),
+		("зарезервирована", "зарезервирована"),
+		("занята", "занята")
 	)
 	campus_ID = models.ForeignKey(Campus, to_field = 'ID', on_delete = models.PROTECT)
-	classroom_umber = models.ForeignKey(Classroom, to_field = 'number', on_delete = models.PROTECT)
+	classroom_number = models.ForeignKey(Classroom, to_field = 'number', on_delete = models.PROTECT)
 	number = models.IntegerField(validators = [class_number_validator])
-	vacant = models.CharField(max_length = choice_length, choices = __vacant, default = "free")
+	vacant = models.CharField(max_length = choice_length, choices = _vacant, default = "свободна")
 	info = models.CharField(max_length = info_length, blank = True)
+
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)
 
 
 class User(models.Model):
-	__status = (
-		("student", "student"),
-		("teacher", "teacher"),
-		("redactor", "redactor"),
-		("server", "server")
+	_status = (
+		("студент", "студент"),
+		("преподаватель", "преподаватель"),
+		("редактор", "редактор"),
+		("сервер", "сервер")
 	)
 	mail = models.CharField(max_length = name_length, validators = [mail_validator])
-	good_faith_index = models.IntegerField()
-	main_campus_ID = models.ForeignKey(Campus, to_field = 'ID', on_delete = models.PROTECT)
-	status = models.CharField(max_length = choice_length, choices = __status, default = "student")
+	good_faith_index = models.IntegerField(default = 0)
+	institution_ID = models.ForeignKey(Institution, to_field = 'ID', on_delete = models.PROTECT)
+	status = models.CharField(max_length = choice_length, choices = _status, default = "студент")
+	email_verification_code = models.CharField(max_length = choice_length, blank = True)
 
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)
