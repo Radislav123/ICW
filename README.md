@@ -24,3 +24,7 @@ to drop database:
 
 to recover database:
 make initial migration
+
+URLs:
+authorization:
+http://ec2-18-218-255-8.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/authorization/
