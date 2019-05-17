@@ -16,8 +16,8 @@ class AuthorizationView(View):
 			self.logger.debug("post message")
 			self.logger.debug(type(request.body))
 			self.logger.debug(request.body)
-			self.logger.debug(type(json.loads(request.body)["city"]))
-			self.logger.debug(json.loads(request.body)["city"])
+			self.logger.debug(type(json.loads(request.body)["city"].encode("utf-8")))
+			self.logger.debug(json.loads(request.body)["city"].encode("utf-8"))
 			# without ensure_ascii
 			# self.logger.debug(json.loads(request.body).encode("utf-8").decode("unicode-escape"))
 			# with ensure_ascii
