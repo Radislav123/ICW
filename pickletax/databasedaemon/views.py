@@ -11,9 +11,7 @@ import random
 app_email = "pickletax@mail.ru"
 dmitryi_verification_code = "Ural_for_gays!"
 dmitryi_emails = [
-	"cherdiadm@gmail.com",
-	"cher-di@mail.ru",
-	"ya.cher-di@yandex.ru"
+	"discherbinin_1@edu.hse.ru"
 ]
 
 
@@ -25,19 +23,33 @@ def log_message(request, logger):
 		logger.error("in log_message - " + error.__str__())
 
 
+def generate_dmitryi_verification_code():
+	code = list(dmitryi_verification_code)
+	number = random.randint(3, dmitryi_verification_code.__len__() - 1)
+	positions = []
+	previous_position = 0
+	for i in range(number):
+		current_position = random.randint(previous_position, dmitryi_verification_code.__len__() - 1)
+		positions.append(current_position)
+		previous_position = current_position
+	for position in positions:
+		code[position] = code[position].capitalize()
+	return "".join(code)
+
+
 def generate_verification_code(email):
 	if is_dmitryi(email):
-		return dmitryi_verification_code
+		return generate_dmitryi_verification_code()
 	code_length = 6
 	letters = string.ascii_letters
 	return "".join(random.choice(letters) for i in range(code_length))
 
 
 def get_institution_id(email):
-	try:
-		pass
-	except:
-		pass
+	institutions = Institution.objects.all()
+	for institution in institutions:
+		if re.search(institution.email_domain, email) is not None:
+			return institution
 
 
 def get_unexpected_error(error):
@@ -95,6 +107,12 @@ class AuthorizationView(View):
 
 		return response, status_code
 
+	def verificate(self, body):
+		user = User.objects.get(email = body["email"])
+		if body["verification_code"] == user.email_verification_code:
+			return {}, 251
+		return {}, 451
+
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		log_message(request, self.logger)
@@ -104,10 +122,8 @@ class AuthorizationView(View):
 		if body.get("city") is not None:
 			response, status_code = self.authorize(body)
 		else:
-			# todo: write
-			pass
+			response, status_code = self.verificate(body)
 
-		response = {"something": "from authorization"}
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
 
 
