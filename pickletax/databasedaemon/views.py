@@ -9,6 +9,7 @@ def log_message(request, logger):
 	try:
 		body = json.loads(request.body)
 		logger.debug(body)
+		logger.log(10, body)
 	except BaseException as error:
 		logger.error(error)
 
