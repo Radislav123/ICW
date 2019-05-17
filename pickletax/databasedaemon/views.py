@@ -18,7 +18,6 @@ class AuthorizationView(View):
 	from logs.logger import authorization_logger as logger
 	http_method_names = ["post"]
 
-
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		log_message(request, self.logger)
