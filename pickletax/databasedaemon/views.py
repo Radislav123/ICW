@@ -12,6 +12,8 @@ class AuthorizationView(View):
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		try:
+			self.logger.debug("post message")
+			self.logger.debug(type(request.body))
 			self.logger.debug(request.body)
 			# without ensure_ascii
 			# self.logger.debug(json.loads(request.body).encode("utf-8").decode("unicode-escape"))
