@@ -1,7 +1,10 @@
 start all things from pickletax root(C:\ICW\pickletax)
 
-run server:
+run server locally:
 ..\ICW_venv\Scripts\python.exe manage.py runserver
+
+run server reachable from the Internet:
+python manage.py runserver ec2-18-218-255-8.us-east-2.compute.amazonaws.com:9090
 
 run django shell:
 ..\ICW_venv\Scripts\python.exe manage.py shell
@@ -26,5 +29,7 @@ to recover database:
 make initial migration
 
 URLs:
+Hello, world:
+http://ec2-18-218-255-8.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/
 authorization:
 http://ec2-18-218-255-8.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/authorization/
