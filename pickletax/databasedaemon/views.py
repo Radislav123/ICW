@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views import View
 from django.core.mail import send_mail
@@ -13,6 +12,14 @@ dmitryi_verification_code = "Ural_for_gays!"
 dmitryi_emails = [
 	"discherbinin_1@edu.hse.ru"
 ]
+
+
+class PickleTaxStatusCodes:
+	authorization_ok = 260
+	authorization_not_ok = 460
+	verification_ok = 261
+	verification_not_ok = 461
+	unexpected_server_error = 560
 
 
 def log_message(request, logger):
@@ -53,7 +60,7 @@ def get_institution_id(email):
 
 
 def get_unexpected_error(error):
-	return {"unexpected error": error.__str__()}, 550
+	return {"unexpected error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
 
 
 def is_dmitryi(email):
@@ -80,7 +87,7 @@ class AuthorizationView(View):
 				institution_ID = get_institution_id(body["email"])
 			)
 			response = {}
-			status_code = 250
+			status_code = PickleTaxStatusCodes.authorization_ok
 		except BaseException as error:
 			self.logger.error(error)
 			response, status_code = get_unexpected_error(error)
@@ -90,7 +97,7 @@ class AuthorizationView(View):
 		except ValidationError as error:
 			self.logger.error(error)
 			response = {}
-			status_code = 450
+			status_code = PickleTaxStatusCodes.authorization_not_ok
 		except BaseException as error:
 			self.logger.error(error)
 			response, status_code = get_unexpected_error(error)
@@ -110,8 +117,8 @@ class AuthorizationView(View):
 	def verificate(self, body):
 		user = User.objects.get(email = body["email"])
 		if body["verification_code"] == user.email_verification_code:
-			return {}, 251
-		return {}, 451
+			return {}, PickleTaxStatusCodes.verification_ok
+		return {}, PickleTaxStatusCodes.verification_not_ok
 
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):

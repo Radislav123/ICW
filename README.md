@@ -33,3 +33,10 @@ Hello, world:
 http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/
 authorization:
 http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/authorization/
+
+custom http codes:
+	authorization_ok = 260
+	authorization_not_ok = 460
+	verification_ok = 261
+	verification_not_ok = 461
+	unexpected_server_error = 560
