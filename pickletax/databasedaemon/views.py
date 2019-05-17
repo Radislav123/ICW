@@ -5,24 +5,22 @@ from .models import *
 import json
 
 
+def log_message(request, logger):
+	try:
+		body = json.loads(request.body)
+		logger.debug(body)
+	except BaseException as error:
+		logger.error(error)
+
+
 class AuthorizationView(View):
 	from logs.logger import authorization_logger as logger
 	http_method_names = ["post"]
 
+
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
-		try:
-			self.logger.debug("")
-			self.logger.debug("post message")
-			self.logger.debug(type(request.body))
-			self.logger.debug(request.body)
-
-			body = json.loads(request.body)
-			self.logger.debug(type(body))
-			self.logger.debug(body)
-			self.logger.debug("")
-		except BaseException as error:
-			self.logger.error(error)
+		log_message(request, self.logger)
 		response = {"something": "from authorization"}
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = 250)
 
