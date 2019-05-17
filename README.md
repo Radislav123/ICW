@@ -22,14 +22,14 @@ database migrations:
 ..\ICW_venv\Scripts\python.exe manage.py migrate
 
 to drop database:
-1) delete migration files(without __init__.py and the folder)
-2) delete database
+delete migration files(without __init__.py and the folder)
+delete database
 
 to recover database:
 make initial migration
 
 URLs:
 Hello, world:
-http://ec2-18-218-255-8.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/
+http://ec2-3-16-24-20.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/
 authorization:
-http://ec2-18-218-255-8.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/authorization/
+http://ec2-3-16-24-20.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/authorization/
