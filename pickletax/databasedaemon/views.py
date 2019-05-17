@@ -18,12 +18,8 @@ class AuthorizationView(View):
 			self.logger.debug(request.body)
 
 			body = json.loads(request.body)
-			self.logger.debug(type(body["city"]))
-			self.logger.debug(body["city"])
-			# without ensure_ascii
-			# self.logger.debug(json.loads(request.body).encode("utf-8").decode("unicode-escape"))
-			# with ensure_ascii
-			# self.logger.debug(request.body.decode("unicode-escape"))
+			self.logger.debug(type(body))
+			self.logger.debug(body)
 		except BaseException as error:
 			self.logger.error(error)
 		response = {"something": "from authorization"}

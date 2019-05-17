@@ -10,12 +10,6 @@ authorization = address + "authorization/"
 
 print("\nAuthorization test starts.")
 try:
-	# json_str = str(
-	#	{
-	#		"city": "Москва".encode("utf-8"),
-	#		"email": "testemail@edu.hse.ru"
-	#	}
-	# )
 	response = requests.post(
 		url = authorization,
 		data = b'{"city":"\xd0\x9c\xd0\xbe\xd1\x81\xd0\xba\xd0\xb2\xd0\xb0","email":"cher-di@mail.ru"}'
