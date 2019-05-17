@@ -18,8 +18,8 @@ class AuthorizationView(View):
 			self.logger.debug(request.body)
 
 			body = json.loads(request.body)
-			self.logger.debug(type(body))
-			self.logger.debug(body)
+			self.logger.debug(type(body["city"]))
+			self.logger.debug(body["city"])
 			# without ensure_ascii
 			# self.logger.debug(json.loads(request.body).encode("utf-8").decode("unicode-escape"))
 			# with ensure_ascii
