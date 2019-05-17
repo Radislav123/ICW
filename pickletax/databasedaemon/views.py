@@ -8,11 +8,10 @@ import json
 def log_message(request, logger):
 	try:
 		body = json.loads(request.body)
-		logger.error("123")
-		logger.log(10, body)
-		logger.error("123")
-		logger.debug(body)
-		logger.error("123")
+		logger.log(10, "тест")
+		logger.log(20, "тест")
+		logger.debug("тест")
+		logger.error("тест")
 	except BaseException as error:
 		logger.error(error)
 
