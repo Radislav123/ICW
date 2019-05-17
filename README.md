@@ -30,6 +30,6 @@ make initial migration
 
 URLs:
 Hello, world:
-http://ec2-3-16-24-20.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/
+http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/
 authorization:
-http://ec2-3-16-24-20.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/authorization/
+http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/authorization/

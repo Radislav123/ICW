@@ -4,7 +4,8 @@ import requests
 import json
 
 
-address = "http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/"
+# address = "http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:9090/pickletax/databasedaemon/"
+address = "http://127.0.0.1:8000/pickletax/databasedaemon/"
 authorization = address + "authorization/"
 
 

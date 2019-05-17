@@ -4,6 +4,7 @@ exec(open('databasedaemon\\cleardatabase.py', encoding = 'utf-8').read())
 
 new_institution = models.Institution(
 	name = "Национальный исследовательский университет «Высшая школа экономики» (НИУ ВШЭ)",
+	email_domain = "edu.hse",
 	class_type = "пара"
 )
 new_institution.save()
@@ -56,10 +57,11 @@ for classroom in new_classrooms:
 		new_classroom_activity.save()
 
 new_user = models.User(
-	mail = "testemail@edu.hse.ru",
+	email = "testemail@edu.hse.ru",
 	institution_ID = models.Institution.objects.get(
 		name = "Национальный исследовательский университет «Высшая школа экономики» (НИУ ВШЭ)"
 	),
 )
+new_user.save()
 
 print("Basics were filled in database.")

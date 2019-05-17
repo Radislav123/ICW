@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+from logs.logger import manage_logger as logger
 import os
 import sys
 
 
 def main():
+    if "runserver" in sys.argv:
+        logger.info("server starts")
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pickletax.settings')
     try:
         from django.core.management import execute_from_command_line

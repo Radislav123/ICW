@@ -1,6 +1,6 @@
 import re
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 
 info_length = 500
@@ -35,11 +35,23 @@ def good_faith_index_validating(value):
 		raise ValidationError(message = "%(value)s is not in range from -100 to 100.", params = {"value": value})
 
 
-def mail_validator(value):
-	regex = re.compile(r"\w{1,40}@\w{1,10}.\w{1,10}.?\w{,5}")
+def email_validator(value):
+	regex = re.compile(r"\w{1,40}@\w{1,10}.\w{1,10}.\w{,5}")
 	if re.fullmatch(regex, value) is None:
 		raise ValidationError(
 			message = "%(value)s is not a valid email(please entry email witch fits example pattern - \"something@edu.hse.ru\".",
+			params = {"value": value}
+		)
+
+
+def email_domain_validator(value):
+	try:
+		Institution.objects.get(email_domain = value)
+	except ObjectDoesNotExist:
+		pass
+	else:
+		raise ValidationError(
+			message = "%(value)s email domain is already reserved or there is another problem.",
 			params = {"value": value}
 		)
 
@@ -78,6 +90,7 @@ class Institution(models.Model):
 	)
 	ID = models.AutoField(primary_key = True)
 	name = models.CharField(max_length = name_length)
+	email_domain = models.CharField(max_length = choice_length, default = "hse", validators = [email_domain_validator])
 	class_type = models.CharField(max_length = choice_length, choices = _class_type, default = "пара")
 	max_lesson_number = models.IntegerField(default = 9)
 
@@ -148,7 +161,7 @@ class User(models.Model):
 		("редактор", "редактор"),
 		("сервер", "сервер")
 	)
-	mail = models.CharField(max_length = name_length, validators = [mail_validator])
+	email = models.CharField(max_length = name_length, validators = [email_validator])
 	good_faith_index = models.IntegerField(default = 0)
 	institution_ID = models.ForeignKey(Institution, to_field = 'ID', on_delete = models.PROTECT)
 	status = models.CharField(max_length = choice_length, choices = _status, default = "студент")
