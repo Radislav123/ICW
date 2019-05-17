@@ -8,7 +8,7 @@ import json
 def log_message(request, logger):
 	try:
 		logger.info("try section")
-		logger.debug(request.body.decode("cp1252"))
+		logger.debug(request.body.decode("utf-8"))
 	except BaseException as error:
 		logger.info("error section")
 		logger.error(error)
