@@ -7,7 +7,7 @@ import json
 
 def log_message(request, logger):
 	try:
-		logger.debug(request.body.decode("utf-8"))
+		logger.debug(request.body.decode("unicode-escape"))
 	except BaseException as error:
 		logger.error(error)
 
