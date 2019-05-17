@@ -20,6 +20,7 @@ class AuthorizationView(View):
 			body = json.loads(request.body)
 			self.logger.debug(type(body))
 			self.logger.debug(body)
+			self.logger.debug("")
 		except BaseException as error:
 			self.logger.error(error)
 		response = {"something": "from authorization"}
