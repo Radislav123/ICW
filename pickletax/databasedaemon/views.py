@@ -159,7 +159,6 @@ class AuthorizationView(View):
 				return response, PickleTaxStatusCodes.verification_ok
 			return {"status": "verification not ok"}, PickleTaxStatusCodes.verification_not_ok
 		except BaseException as error:
-			self.logger.debug("123321 - " + user.email)
 			return get_unexpected_server_error(error, self.logger)
 
 	@csrf_exempt
