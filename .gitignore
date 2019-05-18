@@ -1,8 +1,8 @@
 .idea/
 target/
 ICW_venv/
-databasedaemon/migrations/
-!databasedaemon/migrations/__init__.py
+pickletax/databasedaemon/migrations/
+!pickletax/databasedaemon/migrations/__init__.py
 __pycache__/
 *.iml
 *.log
