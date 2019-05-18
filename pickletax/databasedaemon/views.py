@@ -128,7 +128,10 @@ class AuthorizationView(View):
 			new_user.email_verification_code = verification_code
 			self.logger.debug("verification code - " + verification_code.__str__())
 			new_user.save()
-			message = "This is verification code:" + verification_code + "\nPlease, entry it in corresponding field in the app."
+			message = "This is your verification code:" + verification_code
+			message += "\nPlease, entry it in corresponding field in the app."
+			message += "\nWe are not cheaters. There is our course work."
+			message += "\nIf you are not expecting for this message, please ignore it."
 			send_mail(
 				subject = "Verification in PickleTax",
 				message = message,
@@ -176,6 +179,12 @@ class UserStatusUpdateView(View):
 		for campus in campuses:
 			classrooms = Classroom.objects.filter(campus_ID = campus)
 			classroom_array = []
+
+			campus_array.append(
+				{
+
+				}
+			)
 
 	def post(self, request, *args, **kwargs):
 		response: dict
