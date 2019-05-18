@@ -25,7 +25,7 @@ class PickleTaxStatusCodes:
 
 def log_message(request, logger):
 	try:
-		logger.info(request.body.decode("utf-8"))
+		logger.info("message logging - " + request.body.decode("utf-8"))
 	except BaseException as error:
 		logger.info("error section")
 		logger.error("in log_message - " + error.__str__())
@@ -75,10 +75,6 @@ class AuthorizationView(View):
 	http_method_names = ["post"]
 
 	def authorize(self, body):
-		response: dict
-		status_code: int
-		new_user: User
-
 		try:
 			new_user = User.objects.get(email = body["email"])
 		except ObjectDoesNotExist:
@@ -88,7 +84,7 @@ class AuthorizationView(View):
 			)
 		except BaseException as error:
 			self.logger.error(error)
-			response, status_code = get_unexpected_error(error)
+			return get_unexpected_error(error)
 
 		try:
 			new_user.save()
@@ -118,6 +114,7 @@ class AuthorizationView(View):
 		try:
 			user = User.objects.get(email = body["email"])
 			if body["verification_code"] == user.email_verification_code:
+				# todo: also returning database is required
 				return {"status": "verification ok"}, PickleTaxStatusCodes.verification_ok
 			return {"status": "verification not ok"}, PickleTaxStatusCodes.verification_not_ok
 		except BaseException as error:
@@ -128,8 +125,6 @@ class AuthorizationView(View):
 	def post(self, request, *args, **kwargs):
 		log_message(request, self.logger)
 		body = json.loads(request.body)
-		response: dict
-		status_code: int
 		if body.get("city") is not None:
 			response, status_code = self.authorize(body)
 		else:
