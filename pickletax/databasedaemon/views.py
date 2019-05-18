@@ -62,7 +62,7 @@ def get_institution_id(email):
 
 
 def get_unexpected_server_error(error, logger):
-	logger.error("unexpected server error - " + error.__str__() + " - " + type(error))
+	logger.error("unexpected server error - " + error.__str__() + " - " + type(error).__str__())
 	return {"unexpected server error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
 
 
