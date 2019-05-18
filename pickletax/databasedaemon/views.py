@@ -149,7 +149,7 @@ class AuthorizationView(View):
 					"status": "verification ok",
 					"campuses": self.get_institution_structure(user.email),
 					"classrooms_types": self.get_classroom_types(),
-					"max_lesson_number": get_max_lesson_number(user.email)
+					"max_lesson_number": self.get_max_lesson_number(user.email)
 				}
 				return response, PickleTaxStatusCodes.verification_ok
 			return {"status": "verification not ok"}, PickleTaxStatusCodes.verification_not_ok
