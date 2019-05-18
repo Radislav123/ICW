@@ -60,7 +60,8 @@ def get_institution_id(email):
 			return institution
 
 
-def get_unexpected_error(error):
+def get_unexpected_server_error(error, logger):
+	logger.error("unexpected server error - " + error.__str__())
 	return {"unexpected server error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
 
 
@@ -68,6 +69,11 @@ def is_dmitryi(email):
 	if email in dmitryi_emails:
 		return True
 	return False
+
+
+def classroom_types():
+	# todo: write
+	payload = {"classrooms_types": 123}
 
 
 class AuthorizationView(View):
@@ -83,8 +89,7 @@ class AuthorizationView(View):
 				institution_ID = get_institution_id(body["email"])
 			)
 		except BaseException as error:
-			self.logger.error(error)
-			return get_unexpected_error(error)
+			return get_unexpected_server_error(error, self.logger)
 
 		try:
 			new_user.save()
@@ -93,15 +98,16 @@ class AuthorizationView(View):
 			response = {"error": error.__str__()}
 			status_code = PickleTaxStatusCodes.authorization_not_ok
 		except BaseException as error:
-			self.logger.error(error)
-			response, status_code = get_unexpected_error(error)
+			response, status_code = get_unexpected_server_error(error, self.logger)
 		else:
 			verification_code = generate_verification_code(body["email"])
 			new_user.email_verification_code = verification_code
+			self.logger.debug("verification code - " + verification_code.__str__())
 			new_user.save()
+			message = "This is verification code:" + verification_code + "\nPlease, entry it in corresponding field in the app."
 			send_mail(
 				subject = "Verification in PickleTax",
-				message = "This is your verification code: %s\nPlease, entry it in corresponding field in the app.",
+				message = message,
 				from_email = app_email,
 				recipient_list = [body["email"]]
 			)
@@ -118,8 +124,7 @@ class AuthorizationView(View):
 				return {"status": "verification ok"}, PickleTaxStatusCodes.verification_ok
 			return {"status": "verification not ok"}, PickleTaxStatusCodes.verification_not_ok
 		except BaseException as error:
-			self.logger.error(error)
-			return get_unexpected_error(error)
+			return get_unexpected_server_error(error, self.logger)
 
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
