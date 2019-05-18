@@ -48,13 +48,13 @@ class AuthorizationView(View):
 	http_method_names = ["post"]
 
 	def get_max_lesson_number(self, user_email):
-		self.logger.debug(type(User.objects.get(email = user_email).institution_ID.max_lesson_number))
 		return User.objects.get(email = user_email).institution_ID.max_lesson_number
 
 	def get_classroom_types(self):
 		classroom_types = []
 		for classroom_type in Classroom._type:
 			classroom_types.append(classroom_type[0])
+		self.logger.debug(classroom_types)
 		return classroom_types
 
 	def get_institution_structure(self, user_email):
@@ -77,6 +77,7 @@ class AuthorizationView(View):
 					"classrooms": classrooms
 				}
 			)
+		self.logger.debug(campus_array)
 		return campus_array
 
 	def is_dmitryi(self, user_email):
