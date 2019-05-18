@@ -76,7 +76,6 @@ class AuthorizationView(View):
 					"classrooms": classroom_array
 				}
 			)
-		self.logger.debug(campus_array)
 		return campus_array
 
 	def is_dmitryi(self, user_email):
@@ -168,10 +167,17 @@ class AuthorizationView(View):
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
 
 
-class StatusUpdateView(View):
-	http_method_names = ["get"]
+class UserStatusUpdateView(View):
+	http_method_names = ["post"]
 
-	def get(self, request, *args, **kwargs):
+	def get_schedule(self, user_email):
+		campuses = Campus.objects.filter(institution_ID = User.objects.get(email = user_email).institution_ID)
+		campus_array = []
+		for campus in campuses:
+			classrooms = Classroom.objects.filter(campus_ID = campus)
+			classroom_array = []
+
+	def post(self, request, *args, **kwargs):
 		response: dict
 		status_code: int
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
