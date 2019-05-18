@@ -7,6 +7,7 @@ import json
 import string
 import random
 from pickletax import settings
+import traceback
 
 app_email = settings.EMAIL_HOST_USER
 dmitryi_verification_code = "Ural_4_gays!"
@@ -63,7 +64,7 @@ def get_institution_id(email):
 
 def get_unexpected_server_error(error, logger):
 	logger.error("unexpected server error - " + error.__str__())
-	logger.error(error.with_traceback(999999999999))
+	logger.error(traceback.print_exc())
 	return {"unexpected server error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
 
 
