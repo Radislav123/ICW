@@ -54,7 +54,6 @@ class AuthorizationView(View):
 		classroom_types = []
 		for classroom_type in Classroom._type:
 			classroom_types.append(classroom_type[0])
-		self.logger.debug(classroom_types)
 		return classroom_types
 
 	def get_institution_structure(self, user_email):
@@ -74,7 +73,7 @@ class AuthorizationView(View):
 			campus_array.append(
 				{
 					"name": campus.name,
-					"classrooms": classrooms
+					"classrooms": classroom_array
 				}
 			)
 		self.logger.debug(campus_array)
