@@ -8,7 +8,7 @@ import string
 import random
 from pickletax import settings
 
-app_email = settings.EMAIL_HOST
+app_email = settings.EMAIL_HOST_USER
 dmitryi_verification_code = "Ural_for_gays!"
 dmitryi_emails = [
 	"discherbinin_1@edu.hse.ru"
