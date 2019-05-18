@@ -170,7 +170,7 @@ class AuthorizationView(View):
 		if body.get("city") is not None:
 			response, status_code = self.authorize(body)
 		else:
-			logger.error(traceback.print_exc())
+			self.logger.error(traceback.print_exc())
 			response, status_code = self.verificate(body)
 
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
