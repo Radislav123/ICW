@@ -171,7 +171,18 @@ class AuthorizationView(View):
 
 
 class UserStatusUpdateView(View):
+	from logs.logger import status_update_logger as logger
 	http_method_names = ["post"]
+
+	def get_occupied_lesson_numbers(self, classroom):
+		occupied_classroom_activities = ClassroomActivity.objects.filter(
+			classroom = classroom,
+			vacant = ClassroomActivity._vacant[2][0]
+		)
+		numbers = []
+		for classroom_activity in occupied_classroom_activities:
+			numbers.append(classroom_activity.number)
+		return numbers
 
 	def get_schedule(self, user_email):
 		campuses = Campus.objects.filter(institution_ID = User.objects.get(email = user_email).institution_ID)
@@ -179,16 +190,27 @@ class UserStatusUpdateView(View):
 		for campus in campuses:
 			classrooms = Classroom.objects.filter(campus_ID = campus)
 			classroom_array = []
-
+			for classroom in classrooms:
+				classroom_array.append(
+					{
+						"name": classroom.number,
+						"lesson_numbers": self.get_occupied_lesson_numbers(classroom)
+					}
+				)
 			campus_array.append(
 				{
-
+					"name": campus.name,
+					"classrooms_in_schedule": classroom_array
 				}
 			)
+		return campus_array
 
 	def post(self, request, *args, **kwargs):
-		response: dict
-		status_code: int
+		try:
+			response = {"campuses": self.get_schedule(request.body["email"])}
+			status_code = 200
+		except BaseException as error:
+			response, status_code = get_unexpected_server_error(error, self.logger)
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
 
 

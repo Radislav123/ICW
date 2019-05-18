@@ -39,6 +39,7 @@ http status codes in use:
 	authorization_not_ok = 400
 	verification_ok = 200
 	verification_not_ok = 400
+	update_ok = 200
 	unexpected_server_error = 500
 
 http status codes:
