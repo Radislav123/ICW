@@ -75,7 +75,7 @@ def get_classroom_types():
 	classroom_types = []
 	for classroom_type in Classroom._type:
 		classroom_types.append(classroom_type[0])
-	return {"classrooms_types": classroom_types}
+	return classroom_types
 
 
 def get_max_lesson_number(user_email):
@@ -102,7 +102,7 @@ def get_institution_structure(user_email):
 				"classrooms": classrooms
 			}
 		)
-	return {"campuses": campus_array}
+	return campus_array
 
 
 class AuthorizationView(View):
@@ -150,9 +150,16 @@ class AuthorizationView(View):
 			user = User.objects.get(email = body["email"])
 			if body["verification_code"] == user.email_verification_code:
 				# todo: also returning database is required
-				return {"status": "verification ok"}, PickleTaxStatusCodes.verification_ok
+				response = {
+					"status": "verification ok",
+					"campuses": get_institution_structure(user.email),
+					"classrooms_types": get_classroom_types(),
+					"max_lesson_number": get_max_lesson_number(user.email)
+				}
+				return response, PickleTaxStatusCodes.verification_ok
 			return {"status": "verification not ok"}, PickleTaxStatusCodes.verification_not_ok
 		except BaseException as error:
+			self.logger.debug("123321 - " + user.email)
 			return get_unexpected_server_error(error, self.logger)
 
 	@csrf_exempt
