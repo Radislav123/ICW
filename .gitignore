@@ -1,9 +1,12 @@
 .idea/
 target/
 ICW_venv/
+migrations/
 __pycache__/
 *.iml
 *.log
 *.pem
 *.rdp
+*.sqlite3
 AWS.txt
+0*.py
