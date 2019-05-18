@@ -64,7 +64,6 @@ def get_institution_id(email):
 
 def get_unexpected_server_error(error, logger):
 	logger.error("unexpected server error - " + error.__str__())
-	logger.error(traceback.print_exc())
 	return {"unexpected server error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
 
 
@@ -171,6 +170,7 @@ class AuthorizationView(View):
 		if body.get("city") is not None:
 			response, status_code = self.authorize(body)
 		else:
+			logger.error(traceback.print_exc())
 			response, status_code = self.verificate(body)
 
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
