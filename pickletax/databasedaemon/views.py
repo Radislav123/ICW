@@ -50,7 +50,8 @@ def generate_verification_code(email):
 	# 	return generate_dmitryi_verification_code()
 	code_length = 6
 	letters = string.ascii_letters
-	return "".join(random.choice(letters) for i in range(code_length))
+	# return "".join(random.choice(letters) for i in range(code_length))
+	return "aaa"
 
 
 def get_institution_id(email):
@@ -61,7 +62,8 @@ def get_institution_id(email):
 
 
 def get_unexpected_server_error(error, logger):
-	logger.error("unexpected server error - " + error)
+	# logger.error("unexpected server error - " + error.__str__())
+	logger.error(error)
 	return {"unexpected server error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
 
 
