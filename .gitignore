@@ -2,6 +2,7 @@
 target/
 ICW_venv/
 migrations/
+!migrations/__init__.py
 __pycache__/
 *.iml
 *.log
@@ -9,4 +10,3 @@ __pycache__/
 *.rdp
 *.sqlite3
 AWS.txt
-0*.py
