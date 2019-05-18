@@ -6,9 +6,9 @@ from .models import *
 import json
 import string
 import random
+from pickletax import settings
 
-
-app_email = "pickletax@mail.ru"
+app_email = settings.EMAIL_HOST
 dmitryi_verification_code = "Ural_for_gays!"
 dmitryi_emails = [
 	"discherbinin_1@edu.hse.ru"
