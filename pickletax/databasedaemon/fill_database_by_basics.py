@@ -9,15 +9,26 @@ new_institution = models.Institution(
 )
 new_institution.save()
 
-new_campus = models.Campus(
-	institution_ID = models.Institution.objects.get(
-		name = "Национальный исследовательский университет «Высшая школа экономики» (НИУ ВШЭ)"
+new_campuses = [
+	models.Campus(
+		institution_ID = models.Institution.objects.get(
+			name = "Национальный исследовательский университет «Высшая школа экономики» (НИУ ВШЭ)"
+		),
+		name = "Московский институт электроники и математики НИУ ВШЭ (МИЭМ НИУ ВШЭ)",
+		city = "Москва",
+		address = "Таллинская улица, 34"
 	),
-	name = "Московский институт электроники и математики НИУ ВШЭ (МИЭМ НИУ ВШЭ)",
-	city = "Москва",
-	address = "Таллинская улица, 34"
-)
-new_campus.save()
+	models.Campus(
+		institution_ID = models.Institution.objects.get(
+			name = "Национальный исследовательский университет «Высшая школа экономики» (НИУ ВШЭ)"
+		),
+		name = "факультет экономики, Международный институт экономики и финансов, Базовая кафедра МакКинзи и Ко",
+		city = "Москва",
+		address = "Москва, ул. Шаболовка, д. 26, стр. 3, 4, 5, 9"
+	)
+]
+for campus in new_campuses:
+	campus.save()
 
 new_classrooms = [
 	models.Classroom(

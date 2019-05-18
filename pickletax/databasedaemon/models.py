@@ -90,7 +90,7 @@ class Institution(models.Model):
 	)
 	ID = models.AutoField(primary_key = True)
 	name = models.CharField(max_length = name_length)
-	email_domain = models.CharField(max_length = choice_length, default = "hse", validators = [email_domain_validator])
+	email_domain = models.CharField(max_length = choice_length, validators = [email_domain_validator])
 	class_type = models.CharField(max_length = choice_length, choices = _class_type, default = "пара")
 	max_lesson_number = models.IntegerField(default = 9)
 

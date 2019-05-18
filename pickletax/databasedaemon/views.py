@@ -9,7 +9,7 @@ import random
 from pickletax import settings
 
 app_email = settings.EMAIL_HOST_USER
-dmitryi_verification_code = "Ural_for_gays!"
+dmitryi_verification_code = "Ural_4_gays!"
 dmitryi_emails = [
 	"discherbinin_1@edu.hse.ru"
 ]
@@ -33,7 +33,7 @@ def log_message(request, logger):
 
 def generate_dmitryi_verification_code():
 	code = list(dmitryi_verification_code)
-	number = random.randint(3, dmitryi_verification_code.__len__() - 1)
+	number = random.randint(3, dmitryi_verification_code.__len__() - 3)
 	positions = []
 	previous_position = 0
 	for i in range(number):
@@ -46,8 +46,8 @@ def generate_dmitryi_verification_code():
 
 
 def generate_verification_code(email):
-	if is_dmitryi(email):
-		return generate_dmitryi_verification_code()
+	# if is_dmitryi(email):
+	# 	return generate_dmitryi_verification_code()
 	code_length = 6
 	letters = string.ascii_letters
 	return "".join(random.choice(letters) for i in range(code_length))
@@ -71,9 +71,38 @@ def is_dmitryi(email):
 	return False
 
 
-def classroom_types():
-	# todo: write
-	payload = {"classrooms_types": 123}
+def get_classroom_types():
+	classroom_types = []
+	for classroom_type in Classroom._type:
+		classroom_types.append(classroom_type[0])
+	return {"classrooms_types": classroom_types}
+
+
+def get_max_lesson_number(user_email):
+	return User.objects.get(email = user_email).institution_ID.max_lesson_number
+
+
+def get_institution_structure(user_email):
+	campuses = Campus.objects.filter(institution_ID = User.objects.get(email = user_email).institution_ID)
+	campus_array = []
+	for campus in campuses:
+		classrooms = Classroom.objects.filter(campus_ID = campus)
+		classroom_array = []
+		for classroom in classrooms:
+			classroom_array.append(
+				{
+					"name": classroom.number,
+					"campus_name": campus.name,
+					"type": classroom.type
+				}
+			)
+		campus_array.append(
+			{
+				"name": campus.name,
+				"classrooms": classrooms
+			}
+		)
+	return {"campuses": campus_array}
 
 
 class AuthorizationView(View):
