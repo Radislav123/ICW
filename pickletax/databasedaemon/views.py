@@ -7,6 +7,7 @@ import json
 import string
 import random
 
+
 app_email = "pickletax@mail.ru"
 dmitryi_verification_code = "Ural_for_gays!"
 dmitryi_emails = [
@@ -60,7 +61,7 @@ def get_institution_id(email):
 
 
 def get_unexpected_error(error):
-	return {"unexpected error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
+	return {"unexpected server error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
 
 
 def is_dmitryi(email):
@@ -81,13 +82,10 @@ class AuthorizationView(View):
 		try:
 			new_user = User.objects.get(email = body["email"])
 		except ObjectDoesNotExist:
-			# todo: write sending to email
 			new_user = User(
 				email = body["email"],
 				institution_ID = get_institution_id(body["email"])
 			)
-			response = {}
-			status_code = PickleTaxStatusCodes.authorization_ok
 		except BaseException as error:
 			self.logger.error(error)
 			response, status_code = get_unexpected_error(error)
@@ -96,7 +94,7 @@ class AuthorizationView(View):
 			new_user.save()
 		except ValidationError as error:
 			self.logger.error(error)
-			response = {}
+			response = {"error": error.__str__()}
 			status_code = PickleTaxStatusCodes.authorization_not_ok
 		except BaseException as error:
 			self.logger.error(error)
@@ -111,14 +109,20 @@ class AuthorizationView(View):
 				from_email = app_email,
 				recipient_list = [body["email"]]
 			)
+			response = {"status": "authorization ok"}
+			status_code = PickleTaxStatusCodes.authorization_ok
 
 		return response, status_code
 
 	def verificate(self, body):
-		user = User.objects.get(email = body["email"])
-		if body["verification_code"] == user.email_verification_code:
-			return {}, PickleTaxStatusCodes.verification_ok
-		return {}, PickleTaxStatusCodes.verification_not_ok
+		try:
+			user = User.objects.get(email = body["email"])
+			if body["verification_code"] == user.email_verification_code:
+				return {"status": "verification ok"}, PickleTaxStatusCodes.verification_ok
+			return {"status": "verification not ok"}, PickleTaxStatusCodes.verification_not_ok
+		except BaseException as error:
+			self.logger.error(error)
+			return get_unexpected_error(error)
 
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
