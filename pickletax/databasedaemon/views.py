@@ -7,7 +7,6 @@ import json
 import string
 import random
 from pickletax import settings
-import traceback
 
 app_email = settings.EMAIL_HOST_USER
 dmitryi_verification_code = "Ural_4_gays!"
@@ -161,6 +160,7 @@ class AuthorizationView(View):
 				return response, PickleTaxStatusCodes.verification_ok
 			return {"status": "verification not ok"}, PickleTaxStatusCodes.verification_not_ok
 		except BaseException as error:
+			self.logger.debug("123")
 			return get_unexpected_server_error(error, self.logger)
 
 	@csrf_exempt
@@ -170,7 +170,6 @@ class AuthorizationView(View):
 		if body.get("city") is not None:
 			response, status_code = self.authorize(body)
 		else:
-			self.logger.error(traceback.print_exc())
 			response, status_code = self.verificate(body)
 
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
