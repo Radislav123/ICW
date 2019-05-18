@@ -15,11 +15,11 @@ dmitryi_emails = [
 
 
 class PickleTaxStatusCodes:
-	authorization_ok = 260
-	authorization_not_ok = 460
-	verification_ok = 261
-	verification_not_ok = 461
-	unexpected_server_error = 560
+	authorization_ok = 200
+	authorization_not_ok = 400
+	verification_ok = 200
+	verification_not_ok = 400
+	unexpected_server_error = 500
 
 
 def log_message(request, logger):
