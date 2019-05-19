@@ -116,7 +116,6 @@ class AuthorizationView(View):
 	def authorize(self, body):
 		try:
 			new_user = User.objects.get(email = body["email"])
-			new_user(city = body["city"])
 		except ObjectDoesNotExist:
 			new_user = User(
 				email = body["email"],
@@ -125,6 +124,8 @@ class AuthorizationView(View):
 			)
 		except BaseException as error:
 			return get_unexpected_server_error(error, self.logger)
+		else:
+			new_user(city = body["city"])
 
 		try:
 			new_user.save()
