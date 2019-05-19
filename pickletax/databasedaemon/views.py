@@ -221,7 +221,7 @@ class UserStatusUpdateView(View):
 	def post(self, request, *args, **kwargs):
 		try:
 			log_message(request, self.logger)
-			response = {"campuses": self.get_schedule(request.body["email"])}
+			response = {"campuses": self.get_schedule(json.loads(request.body)["email"])}
 			status_code = PickleTaxStatusCodes.user_status_update_ok
 		except BaseException as error:
 			response, status_code = get_unexpected_server_error(error, self.logger)
