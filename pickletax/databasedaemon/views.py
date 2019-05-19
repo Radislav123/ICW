@@ -273,6 +273,7 @@ class StatusChangeView(View):
 
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
+		log_message(request, self.logger)
 		try:
 			response, status_code = self.change_classroom_status(json.loads(request.body))
 		except BaseException as error:
