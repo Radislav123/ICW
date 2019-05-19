@@ -113,8 +113,7 @@ class AuthorizationView(View):
 		# 	return self.generate_dmitryi_verification_code()
 		code_length = 6
 		letters = string.ascii_letters
-		# return "".join(random.choice(letters) for i in range(code_length))
-		return "aaa"
+		return "".join(random.choice(letters) for i in range(code_length))
 
 	def authorize(self, body):
 		try:
