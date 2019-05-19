@@ -102,7 +102,7 @@ class Institution(models.Model):
 class Campus(models.Model):
 	ID = models.AutoField(primary_key = True)
 	institution_ID = models.ForeignKey(to = Institution, to_field = 'ID', on_delete = models.PROTECT)
-	name = models.CharField(max_length = name_length, blank = True)
+	name = models.CharField(max_length = name_length)
 	city = models.CharField(max_length = name_length, validators = [city_validator])
 	address = models.CharField(max_length = name_length)
 	info = models.CharField(max_length = choice_length, blank = True)
@@ -166,6 +166,7 @@ class User(models.Model):
 	institution_ID = models.ForeignKey(Institution, to_field = 'ID', on_delete = models.PROTECT)
 	status = models.CharField(max_length = choice_length, choices = _status, default = "студент")
 	email_verification_code = models.CharField(max_length = choice_length, blank = True)
+	city = models.CharField(max_length = name_length, validators = [city_validator])
 
 	def save(self, *args, **kwargs):
 		self.full_clean()

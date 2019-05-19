@@ -20,6 +20,7 @@ class PickleTaxStatusCodes:
 	authorization_not_ok = 400
 	verification_ok = 200
 	verification_not_ok = 400
+	validation_error = 400
 	unexpected_server_error = 500
 
 
@@ -41,6 +42,11 @@ def get_institution_id(user_email):
 def get_unexpected_server_error(error, logger):
 	logger.error("unexpected server error - " + error.__str__())
 	return {"unexpected server error": error.__str__()}, PickleTaxStatusCodes.unexpected_server_error
+
+
+def get_validation_error(error, logger):
+	logger.error("validation error - " + error.__str__())
+	return {"validation error": error.__str__()}, PickleTaxStatusCodes.validation_error
 
 
 class AuthorizationView(View):
@@ -116,11 +122,10 @@ class AuthorizationView(View):
 			return get_unexpected_server_error(error, self.logger)
 
 		try:
+			new_user(city = body["city"])
 			new_user.save()
 		except ValidationError as error:
-			self.logger.error(error)
-			response = {"error": error.__str__()}
-			status_code = PickleTaxStatusCodes.authorization_not_ok
+			response, status_code = get_validation_error(error, self.logger)
 		except BaseException as error:
 			response, status_code = get_unexpected_server_error(error, self.logger)
 		else:
@@ -185,7 +190,11 @@ class UserStatusUpdateView(View):
 		return numbers
 
 	def get_schedule(self, user_email):
-		campuses = Campus.objects.filter(institution_ID = User.objects.get(email = user_email).institution_ID)
+		user = User.objects.get(email = user_email)
+		campuses = Campus.objects.filter(
+			institution_ID = user.institution_ID,
+			city = user.city
+		)
 		campus_array = []
 		for campus in campuses:
 			classrooms = Classroom.objects.filter(campus_ID = campus)
@@ -207,6 +216,7 @@ class UserStatusUpdateView(View):
 
 	def post(self, request, *args, **kwargs):
 		try:
+			log_message(request, self.logger)
 			response = {"campuses": self.get_schedule(request.body["email"])}
 			status_code = 200
 		except BaseException as error:
@@ -215,12 +225,44 @@ class UserStatusUpdateView(View):
 
 
 class StatusChangeView(View):
+	from logs.logger import status_change_logger as logger
 	http_method_names = ["post"]
+
+	def change_classroom_status(self, body):
+		response: dict
+		status_code: int
+
+		classroom_activity = ClassroomActivity.objects.get(
+			campus_ID = Campus.objects.filter(name = body["campus_name"]),
+			classroom_number = Classroom.objects.filer(number = body["classroom_name"]),
+			number = body["lesson_number"]
+		)
+		self.logger.debug(classroom_activity)
+
+		if classroom_activity.vacant == body["new_classroom_status"]:
+			status_code = 400
+			if body["new_classroom_status"] == ClassroomActivity._vacant[2][0]:
+				response = {"error": "classroom is already occupied"}
+			elif body["new_classroom_status"] == ClassroomActivity._vacant[0][0]:
+				response = {"error": "classroom is already free"}
+		else:
+			classroom_activity(vacant = body["new_classroom_status"])
+			classroom_activity(info = body["description"])
+		try:
+			classroom_activity.save()
+		except ValidationError as error:
+			response, status_code = get_validation_error(error, self.logger)
+		except BaseException as error:
+			response, status_code = get_unexpected_server_error(error, self.logger)
+
+		return response, status_code
 
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
-		response: dict
-		status_code: int
+		try:
+			response, status_code = self.change_classroom_status(json.loads(request.body))
+		except BaseException as error:
+			response, status_code = get_unexpected_server_error(error, self.logger)
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
 
 
