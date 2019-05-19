@@ -116,16 +116,17 @@ class AuthorizationView(View):
 	def authorize(self, body):
 		try:
 			new_user = User.objects.get(email = body["email"])
+			new_user(city = body["city"])
 		except ObjectDoesNotExist:
 			new_user = User(
 				email = body["email"],
-				institution_ID = get_institution_id(body["email"])
+				institution_ID = get_institution_id(body["email"]),
+				city = body["city"]
 			)
 		except BaseException as error:
 			return get_unexpected_server_error(error, self.logger)
 
 		try:
-			new_user(city = body["city"])
 			new_user.save()
 		except ValidationError as error:
 			response, status_code = get_validation_error(error, self.logger)
