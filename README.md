@@ -33,6 +33,10 @@ Hello, world:
 http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:8001/pickletax/databasedaemon/
 authorization:
 http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:8001/pickletax/databasedaemon/authorization/
+status update:
+http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:8001/pickletax/databasedaemon/userstatusupdate/
+status change:
+http://ec2-18-225-6-37.us-east-2.compute.amazonaws.com:8001/pickletax/databasedaemon/statuschange/
 
 http status codes in use:
 	authorization_ok = 200
