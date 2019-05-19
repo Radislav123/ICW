@@ -12,7 +12,7 @@ run django shell:
 run a script in django shell:
 exec(open('path\\to\\a\\script\\from\\pickletax\\root\\script.py', encoding = 'utf-8').read())
 example:
-exec(open('databasedaemon\\fill_database_by_basics.py', encoding = 'utf-8').read())
+exec(open('databasedaemon\\databasefilling\\fill_database_by_basics.py', encoding = 'utf-8').read())
 
 exit shell:
 exit()
