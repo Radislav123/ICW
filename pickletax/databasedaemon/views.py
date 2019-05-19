@@ -116,6 +116,7 @@ class AuthorizationView(View):
 	def authorize(self, body):
 		try:
 			new_user = User.objects.get(email = body["email"])
+			new_user.city = body["city"]
 		except ObjectDoesNotExist:
 			new_user = User(
 				email = body["email"],
@@ -124,8 +125,6 @@ class AuthorizationView(View):
 			)
 		except BaseException as error:
 			return get_unexpected_server_error(error, self.logger)
-		else:
-			new_user(city = body["city"])
 
 		try:
 			new_user.save()
@@ -248,8 +247,8 @@ class StatusChangeView(View):
 				response = {"error": "classroom is already free"}
 			return response, PickleTaxStatusCodes.change_status_not_ok
 		else:
-			classroom_activity(vacant = body["new_classroom_status"])
-			classroom_activity(info = body["description"])
+			classroom_activity.vacant = body["new_classroom_status"]
+			classroom_activity.info = body["description"]
 		try:
 			classroom_activity.save()
 			response = {"something": "from change_classroom_status()"}
