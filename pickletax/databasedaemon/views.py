@@ -186,15 +186,20 @@ class UserStatusUpdateView(View):
 	from logs.logger import status_update_logger as logger
 	http_method_names = ["post"]
 
-	def get_occupied_lesson_numbers(self, classroom):
+	def get_occupied_lessons(self, classroom):
 		occupied_classroom_activities = ClassroomActivity.objects.filter(
 			classroom_number = classroom,
 			vacant = ClassroomActivity._vacant[2][0]
 		)
-		numbers = []
+		lessons = []
 		for classroom_activity in occupied_classroom_activities:
-			numbers.append(classroom_activity.number)
-		return numbers
+			lessons.append(
+				{
+					"lesson_number": classroom_activity.number,
+					"lesson_description": classroom_activity.info
+				}
+			)
+		return lessons
 
 	def get_schedule(self, user_email):
 		user = User.objects.get(email = user_email)
@@ -210,7 +215,7 @@ class UserStatusUpdateView(View):
 				classroom_array.append(
 					{
 						"name": classroom.number,
-						"lesson_numbers": self.get_occupied_lesson_numbers(classroom)
+						"lessons": self.get_occupied_lessons(classroom)
 					}
 				)
 			campus_array.append(
