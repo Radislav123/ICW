@@ -193,10 +193,13 @@ class UserStatusUpdateView(View):
 		)
 		lessons = []
 		for classroom_activity in occupied_classroom_activities:
+			description = classroom_activity.info
+			if description == "":
+				description = "null"
 			lessons.append(
 				{
 					"lesson_number": classroom_activity.number,
-					"lesson_description": classroom_activity.info
+					"lesson_description": description
 				}
 			)
 		return lessons
