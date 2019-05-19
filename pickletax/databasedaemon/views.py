@@ -66,7 +66,10 @@ class AuthorizationView(View):
 		return classroom_types
 
 	def get_institution_structure(self, user_email):
-		campuses = Campus.objects.filter(institution_ID = User.objects.get(email = user_email).institution_ID)
+		campuses = Campus.objects.filter(
+			institution_ID = get_institution_id(user_email),
+			city = User.objects.get(email = user_email).city
+		)
 		campus_array = []
 		for campus in campuses:
 			classrooms = Classroom.objects.filter(campus_ID = campus)
