@@ -185,7 +185,7 @@ class UserStatusUpdateView(View):
 
 	def get_occupied_lesson_numbers(self, classroom):
 		occupied_classroom_activities = ClassroomActivity.objects.filter(
-			classroom = classroom,
+			classroom_number = classroom,
 			vacant = ClassroomActivity._vacant[2][0]
 		)
 		numbers = []
