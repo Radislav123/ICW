@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 
 info_length = 500
-name_length = 100
+name_length = 200
 choice_length = 20
 
 
@@ -12,8 +12,7 @@ choice_length = 20
 def city_validator(value):
 	cities = [
 		"Москва",
-		"Красноярск",
-		"Казань"
+		"Пермь"
 	]
 	if value not in cities:
 		raise ValidationError(message = "%(city)s is not in our city list.", params = {"city": value})
@@ -124,9 +123,10 @@ class Classroom(models.Model):
 		("лаборатория", "лаборатория"),
 		("для сотрудников", "для сотрудников")
 	)
+	ID = models.AutoField(primary_key = True)
 	campus_ID = models.ForeignKey(to = Campus, to_field = 'ID', on_delete = models.PROTECT)
 	# sometimes, appears classrooms with number 210a, for example.
-	number = models.CharField(max_length = choice_length, primary_key = True, validators = [classroom_number_validator])
+	number = models.CharField(max_length = choice_length, validators = [classroom_number_validator])
 	seat_number = models.IntegerField(validators = [classroom_seat_number_validator])
 	access_rights = models.CharField(max_length = choice_length, choices = _access_rights, default = "свободный")
 	type = models.CharField(max_length = choice_length, choices = _type, default = "семинарская")
@@ -144,7 +144,7 @@ class ClassroomActivity(models.Model):
 		("занята", "занята")
 	)
 	campus_ID = models.ForeignKey(Campus, to_field = 'ID', on_delete = models.PROTECT)
-	classroom_number = models.ForeignKey(Classroom, to_field = 'number', on_delete = models.PROTECT)
+	classroom_number = models.ForeignKey(Classroom, to_field = 'ID', on_delete = models.PROTECT)
 	number = models.IntegerField(validators = [class_number_validator])
 	vacant = models.CharField(max_length = choice_length, choices = _vacant, default = "свободна")
 	info = models.CharField(max_length = info_length, blank = True)

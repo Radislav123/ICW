@@ -20,6 +20,9 @@ class PickleTaxStatusCodes:
 	authorization_not_ok = 400
 	verification_ok = 200
 	verification_not_ok = 400
+	user_status_update_ok = 200
+	change_status_ok = 200
+	change_status_not_ok = 400
 	validation_error = 400
 	unexpected_server_error = 500
 
@@ -218,7 +221,7 @@ class UserStatusUpdateView(View):
 		try:
 			log_message(request, self.logger)
 			response = {"campuses": self.get_schedule(request.body["email"])}
-			status_code = 200
+			status_code = PickleTaxStatusCodes.user_status_update_ok
 		except BaseException as error:
 			response, status_code = get_unexpected_server_error(error, self.logger)
 		return HttpResponse(json.dumps(response), content_type = "application/json", status = status_code)
@@ -229,27 +232,26 @@ class StatusChangeView(View):
 	http_method_names = ["post"]
 
 	def change_classroom_status(self, body):
-		response: dict
-		status_code: int
-
+		campus = Campus.objects.get(name = body["campus_name"])
+		classroom = Classroom.objects.get(number = body["classroom_name"], campus_ID = campus)
 		classroom_activity = ClassroomActivity.objects.get(
-			campus_ID = Campus.objects.filter(name = body["campus_name"]),
-			classroom_number = Classroom.objects.filer(number = body["classroom_name"]),
+			campus_ID = campus,
+			classroom_number = classroom,
 			number = body["lesson_number"]
 		)
-		self.logger.debug(classroom_activity)
-
 		if classroom_activity.vacant == body["new_classroom_status"]:
-			status_code = 400
 			if body["new_classroom_status"] == ClassroomActivity._vacant[2][0]:
 				response = {"error": "classroom is already occupied"}
-			elif body["new_classroom_status"] == ClassroomActivity._vacant[0][0]:
+			else:
 				response = {"error": "classroom is already free"}
+			return response, PickleTaxStatusCodes.change_status_not_ok
 		else:
 			classroom_activity(vacant = body["new_classroom_status"])
 			classroom_activity(info = body["description"])
 		try:
 			classroom_activity.save()
+			response = {"something": "from change_classroom_status()"}
+			status_code = PickleTaxStatusCodes.change_status_ok
 		except ValidationError as error:
 			response, status_code = get_validation_error(error, self.logger)
 		except BaseException as error:
