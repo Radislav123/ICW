@@ -1,6 +1,7 @@
 .idea/
 target/
 ICW_venv/
+resources/
 pickletax/databasedaemon/migrations/
 !pickletax/databasedaemon/migrations/__init__.py
 __pycache__/
